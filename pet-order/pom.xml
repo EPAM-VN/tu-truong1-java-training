@@ -19,6 +19,7 @@
         <module>order.core</module>
         <module>order.infrastructure</module>
         <module>order.application</module>
+        <module>order.web</module>
     </modules>
 
     <properties>

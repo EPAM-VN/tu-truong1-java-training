@@ -6,10 +6,11 @@ services:
       - '4317'
       - '4318'
   postgres:
-    image: 'postgres:latest'
+    image: 'postgres:18'
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      - 'POSTGRES_DB=petorder'
+      - 'POSTGRES_PASSWORD=P@ssw0rd@123AA!@#'
+      - 'POSTGRES_USER=postgres'
+      - "TZ=UTC"
     ports:
       - '5432'
