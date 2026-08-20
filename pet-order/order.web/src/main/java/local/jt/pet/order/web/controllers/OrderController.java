@@ -1,4 +1,4 @@
-package local.jt.pet.order.web.controllers.orders;
+package local.jt.pet.order.web.controllers;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -7,9 +7,6 @@ WORKDIR /app
 # Copy parent pom and module poms first for dependency caching
 COPY pom.xml .
 
-COPY order.core/pom.xml order.core/
-COPY order.infrastructure/pom.xml order.infrastructure/
-COPY order.application/pom.xml order.application/
 COPY order.web/pom.xml order.web/
 
 # Download dependencies
