@@ -145,19 +145,6 @@
             <artifactId>spring-boot-starter-webmvc-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <!-- Import your local Core Library Module -->
-        <dependency>
-            <groupId>local.jt.pet</groupId>
-            <artifactId>order-infrastructure</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>local.jt.pet</groupId>
-            <artifactId>order-application</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
         <!-- MapStruct Core -->
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -171,6 +158,15 @@
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-springsecurity6</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.4</version>
         </dependency>
     </dependencies>
 

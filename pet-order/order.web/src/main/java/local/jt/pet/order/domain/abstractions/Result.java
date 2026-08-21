@@ -1,22 +1,26 @@
 package local.jt.pet.order.domain.abstractions;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Result {
     private final boolean isSuccess;
     private final Error error;
+    private List<Error> problemDetails;
 
     public Result(boolean isSuccess, Error error) {
         if (isSuccess && !Objects.equals(error, Error.NONE)) {
-            throw new IllegalStateException();
+            throw new IllegalArgumentException();
         }
 
         if (!isSuccess && Objects.equals(error, Error.NONE)) {
-            throw new IllegalStateException();
+            throw new IllegalArgumentException();
         }
 
         this.isSuccess = isSuccess;
         this.error = error;
+        this.problemDetails = new ArrayList<>();
     }
 
     public boolean isSuccess() {
@@ -43,12 +47,12 @@ public class Result {
         return new Result.Generic<>(value, true, Error.NONE);
     }
 
-    public static <T> Result.Generic<T> failure(Error error, T value) {
-        return new Result.Generic<>(value, false, error);
+    public static <T> Result.Generic<T> failureOf(Error error) {
+        return new Result.Generic<>(null, false, error);
     }
 
     public static <T> Result.Generic<T> create(T value) {
-        return value != null ? success(value) : failure(Error.NULL_VALUE, value);
+        return value != null ? success(value) : failureOf(Error.NULL_VALUE);
     }
 
     public static final class Generic<T> extends Result {
