@@ -3,16 +3,20 @@ package local.jt.pet.order.application.exceptions;
 import org.springframework.http.ProblemDetail;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ApiProblemDetail extends ProblemDetail {
 
     private String errorCode;
     private String traceId;
     private Instant timestamp;
+    private List<ValidationError> errors;
 
     public ApiProblemDetail(ProblemDetail problemDetail) {
         super(problemDetail);
         this.timestamp = Instant.now();
+        this.errors = new ArrayList<>();
     }
 
     public String getErrorCode() {
@@ -33,5 +37,9 @@ public class ApiProblemDetail extends ProblemDetail {
 
     public Instant getTimestamp() {
         return timestamp;
+    }
+
+    public List<ValidationError> getErrors() {
+        return errors;
     }
 }
