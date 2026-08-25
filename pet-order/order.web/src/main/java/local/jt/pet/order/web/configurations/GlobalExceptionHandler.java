@@ -1,8 +1,8 @@
 package local.jt.pet.order.web.configurations;
 
 import jakarta.servlet.http.HttpServletRequest;
-import local.jt.pet.order.application.exceptions.ApiProblemDetail;
-import local.jt.pet.order.application.exceptions.ValidationError;
+import local.jt.pet.order.web.exceptions.ApiProblemDetail;
+import local.jt.pet.order.web.exceptions.ValidationError;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.*;
