@@ -13,11 +13,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -41,7 +42,7 @@ public class CustomerController {
         Optional<Customer> customer = customerService.findById(customerId);
 
         if  (customer.isPresent()) {
-            Optional<CustomerDto> viewModel = Optional.of(customer.map(customerMapper::toDto).orElseGet(null));
+            Optional<CustomerDto> viewModel = customer.map(customerMapper::toDto);
             return new ResponseEntity<>(viewModel, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -52,7 +53,7 @@ public class CustomerController {
         Optional<Customer> customer = customerService.findByEmail(email);
 
         if  (customer.isPresent()) {
-            Optional<CustomerDto> viewModel = Optional.of(customer.map(customerMapper::toDto).orElseGet(null));
+            Optional<CustomerDto> viewModel = customer.map(customerMapper::toDto);
             new ResponseEntity<>(viewModel, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -76,6 +77,7 @@ public class CustomerController {
         return new ResponseEntity<>(viewModel, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('SCOPE_customers.write')")
     @PostMapping(version = "1.0")
     public ResponseEntity<CustomerDto> create(@RequestBody CreateCustomerCommand cmd) {
         Customer result = customerService.create(cmd);
@@ -83,14 +85,26 @@ public class CustomerController {
         return new ResponseEntity<>(viewModel, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAuthority('SCOPE_customers.update')")
     @PutMapping(version = "1.0")
     public ResponseEntity<Optional<CustomerDto>> update(@RequestBody UpdateCustomerCommand cmd) {
         Optional<Customer> result = customerService.update(cmd);
 
         if  (result.isPresent()) {
-            Optional<CustomerDto> viewModel = Optional.of(result.map(customerMapper::toDto).orElseGet(null));
+            Optional<CustomerDto> viewModel = result.map(customerMapper::toDto);
             new ResponseEntity<>(viewModel, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+    @PreAuthorize("hasAuthority('SCOPE_customers.read')")
+    @GetMapping("me")
+    public Map<String, Object> me(@AuthenticationPrincipal Jwt jwt) {
+        return Map.of(
+                "subject", Objects.requireNonNull(jwt.getSubject()),
+                "email", Objects.requireNonNull(jwt.getClaim("preferred_username")),
+                "name", Objects.requireNonNull(jwt.getClaim("name"))
+        );
+    }
+
 }

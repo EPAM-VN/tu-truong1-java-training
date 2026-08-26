@@ -31,7 +31,7 @@ public interface CustomerRepository extends JpaRepository<Customer, UUID>, JpaSp
 
     @Query(
             value = """
-                SELECT c.*
+                SELECT DISTINCT c.*
                 FROM customers AS c
                 JOIN addresses AS a
                     ON c.id = a.customer_id
@@ -39,7 +39,7 @@ public interface CustomerRepository extends JpaRepository<Customer, UUID>, JpaSp
                     AND c.email ILIKE CONCAT('%', :email, '%')
             """,
             countQuery = """
-                SELECT COUNT(*)
+                SELECT COUNT(DISTINCT *)
                 FROM customers AS c
                 JOIN addresses AS a
                     ON c.id = a.customer_id
