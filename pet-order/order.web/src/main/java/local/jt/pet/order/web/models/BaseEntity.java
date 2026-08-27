@@ -6,7 +6,9 @@ import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Transient;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.ArrayList;
@@ -15,6 +17,8 @@ import java.util.List;
 import java.util.UUID;
 
 @MappedSuperclass
+@SuperBuilder
+@NoArgsConstructor
 public abstract class BaseEntity
 {
     @Setter

@@ -3,8 +3,12 @@ package local.jt.pet.order.web.models;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 import local.jt.pet.order.web.enums.Membership;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +19,8 @@ import java.util.List;
         @Index(name = "idx_customers_email", columnList = "email",  unique = true),
 })
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@NoArgsConstructor
+@SuperBuilder
 public class Customer extends Person {
     @Column(name = "email", nullable = false)
     private String email;
@@ -27,9 +33,11 @@ public class Customer extends Person {
     private Membership membership;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 100)
     private List<Address> addresses = new ArrayList<>();
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 100)
     private List<Order> orders = new ArrayList<>();
 
     public boolean isMember() {

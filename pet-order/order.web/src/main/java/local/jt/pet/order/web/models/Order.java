@@ -3,8 +3,11 @@ package local.jt.pet.order.web.models;
 import jakarta.persistence.*;
 import local.jt.pet.order.web.enums.OrderStatus;
 import local.jt.pet.order.web.enums.PaymentMethod;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,6 +18,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "orders")
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@NoArgsConstructor
+@SuperBuilder
 public final class Order extends BaseEntity {
     @Column(name = "notes")
     private String notes;

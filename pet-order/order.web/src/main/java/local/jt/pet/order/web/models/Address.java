@@ -3,11 +3,15 @@ package local.jt.pet.order.web.models;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Data
 @Table(name = "addresses")
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@NoArgsConstructor
+@SuperBuilder
 public class Address extends BaseEntity {
     private String street;
     private String city;
