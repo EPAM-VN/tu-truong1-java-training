@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.PredicateSpecification;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -35,6 +36,7 @@ public class CustomerService {
         return customerRepository.search(membership.name(), email, pageable);
     }
 
+    @Transactional(readOnly = true)
     public Page<Customer> getAll(Pageable pageable) {
         return customerRepository.findAll(pageable);
     }
@@ -44,6 +46,7 @@ public class CustomerService {
         return customerRepository.save(customer);
     }
 
+    @Transactional
     public Optional<Customer> update(UpdateCustomerCommand cmd) {
         Optional<Customer> customer = customerRepository.findById(cmd.id());
 
