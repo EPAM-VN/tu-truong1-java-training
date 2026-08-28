@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="WARN" monitorInterval="60">
+
+    <Properties>
+        <Property name="APP_NAME">pet-order-api</Property>
+
+        <Property name="LOG_PATH">${sys:LOG_PATH:-./logs}</Property>
+
+        <Property name="LOG_PATTERN">
+            %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level
+            traceId=%X{traceId:-N/A}
+            spanId=%X{spanId:-N/A}
+            requestId=%X{requestId:-N/A}
+            %logger{36} - %msg%n%throwable
+        </Property>
+    </Properties>
+
+    <Appenders>
+
+        <!-- Console -->
+
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+
+        <!-- Application log file -->
+
+        <RollingFile
+                name="ApplicationFile"
+                fileName="${LOG_PATH}/${APP_NAME}.log"
+                filePattern="${LOG_PATH}/archive/${APP_NAME}-%d{yyyy-MM-dd}-%i.log.gz">
+
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+
+            <DefaultRolloverStrategy max="30">
+                <Delete basePath="${LOG_PATH}/archive">
+                    <IfFileName glob="*.log.gz"/>
+                    <IfLastModified age="30d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <!-- Async wrapper -->
+
+        <Async name="AsyncFile">
+            <AppenderRef ref="ApplicationFile"/>
+        </Async>
+
+        <Async name="AsyncConsole">
+            <AppenderRef ref="Console"/>
+        </Async>
+
+    </Appenders>
+
+    <Loggers>
+
+        <!-- Application code -->
+
+        <Logger name="local.jt.pet.order.web"
+                level="DEBUG"
+                additivity="false">
+            <AppenderRef ref="AsyncConsole"/>
+            <AppenderRef ref="AsyncFile"/>
+        </Logger>
+
+        <!-- Spring -->
+
+        <Logger name="org.springframework"
+                level="INFO"/>
+
+        <!-- Hibernate -->
+
+        <Logger name="org.hibernate"
+                level="WARN"/>
+
+        <!-- SQL logging disabled by default -->
+
+        <Logger name="org.hibernate.SQL"
+                level="DEBUG"/>
+
+        <Logger name="org.hibernate.orm.jdbc.bind"
+                level="TRACE"/>
+
+        <!-- Root -->
+
+        <Root level="INFO">
+            <AppenderRef ref="AsyncConsole"/>
+            <AppenderRef ref="AsyncFile"/>
+        </Root>
+
+    </Loggers>
+
+</Configuration>

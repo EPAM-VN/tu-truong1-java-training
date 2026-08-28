@@ -1,4 +1,4 @@
-package local.jt.pet.order.web.unit.repositories;
+package local.jt.pet.order.web.integration.repositories;
 
 import local.jt.pet.order.web.helpers.DataHelper;
 import local.jt.pet.order.web.models.Customer;

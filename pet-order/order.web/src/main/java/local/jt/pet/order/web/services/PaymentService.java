@@ -2,8 +2,10 @@ package local.jt.pet.order.web.services;
 
 import local.jt.pet.order.web.configurations.PaymentApiProperties;
 import local.jt.pet.order.web.dto.PaymentDto;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -13,14 +15,10 @@ import java.rmi.RemoteException;
 import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class PaymentService {
     private final PaymentApiProperties props;
-    private final RestClient restClient;
-
-    public PaymentService(@Qualifier("paymentGatewayClient") RestClient restClient, PaymentApiProperties props) {
-        this.props = props;
-        this.restClient = restClient;
-    }
+    @Qualifier("paymentGatewayClient") private final RestClient restClient;
 
     public PaymentDto getPayment(UUID id) {
         return restClient.get()

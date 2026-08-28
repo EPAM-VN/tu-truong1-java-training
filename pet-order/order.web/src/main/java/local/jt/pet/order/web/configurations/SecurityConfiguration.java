@@ -28,7 +28,7 @@ public class SecurityConfiguration {
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/", "/index", "/index.html", "/favicon.ico", "/actuator/health","/error")
+                    .requestMatchers("/", "/index", "/index.html", "/favicon.ico", "/actuator/**","/error")
                         .permitAll()
                     .anyRequest()
                         .authenticated()
