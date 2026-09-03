@@ -4,6 +4,7 @@ import local.jt.pet.order.web.configurations.PaymentApiProperties;
 import local.jt.pet.order.web.dto.PaymentDto;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.apache.hc.client5.http.impl.classic.RequestFailedException;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,7 +26,7 @@ public class PaymentService {
                 .uri("/api/v1/payments/{id}", id)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
-                    throw new ResourceNotFoundException("Payment not found with ID: " + id);
+                    throw new RequestFailedException("Payment not found with ID: " + id);
                 })
                 .onStatus(HttpStatusCode::is5xxServerError, (request, response) -> {
                     throw new RemoteException("External Payment Gateway API failed down the line.");

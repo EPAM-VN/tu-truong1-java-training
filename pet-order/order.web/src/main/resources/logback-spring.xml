@@ -139,7 +139,7 @@
     <!-- SQL -->
 
     <logger name="org.hibernate.SQL"
-            level="DEBUG"/>
+            level=""/>
 
     <logger name="org.hibernate.orm.jdbc.bind"
             level="TRACE"/>

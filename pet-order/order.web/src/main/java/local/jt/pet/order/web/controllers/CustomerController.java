@@ -2,11 +2,13 @@ package local.jt.pet.order.web.controllers;
 
 import local.jt.pet.order.web.dto.CreateCustomerCommand;
 import local.jt.pet.order.web.dto.CustomerDto;
+import local.jt.pet.order.web.dto.PaymentDto;
 import local.jt.pet.order.web.dto.UpdateCustomerCommand;
 import local.jt.pet.order.web.enums.Membership;
 import local.jt.pet.order.web.mappers.CustomerMapper;
 import local.jt.pet.order.web.services.CustomerService;
 import local.jt.pet.order.web.models.Customer;
+import local.jt.pet.order.web.services.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +28,7 @@ import java.util.*;
 public class CustomerController {
     private final CustomerService customerService;
     private final CustomerMapper customerMapper;
+    private final PaymentService paymentService;
 
     @GetMapping(version = "1.0")
     public ResponseEntity<List<CustomerDto>> getAll(@PageableDefault(sort = "id") Pageable pageable) {
@@ -38,8 +41,15 @@ public class CustomerController {
     }
 
     @GetMapping(path = "{customerId}", version = "1.0")
-    public ResponseEntity<Optional<CustomerDto>> getById(@PathVariable UUID customerId) {
-        Optional<Customer> customer = customerService.findById(customerId);
+    public ResponseEntity<Optional<CustomerDto>> getById(@PathVariable UUID customerId, @RequestParam(name = "includeAddresses") Boolean includeAddresses) {
+        Optional<Customer> customer = Optional.empty();
+
+        if (includeAddresses) {
+            customer = customerService.getIncludeAddresses(customerId);
+        }
+        else {
+            customer = customerService.findById(customerId);
+        }
 
         if  (customer.isPresent()) {
             Optional<CustomerDto> viewModel = customer.map(customerMapper::toDto);
@@ -107,4 +117,10 @@ public class CustomerController {
         );
     }
 
+    @GetMapping("test")
+    public ResponseEntity<PaymentDto> test() {
+        PaymentDto rs = paymentService.getPayment(UUID.randomUUID());
+
+        return new ResponseEntity<>(rs, HttpStatus.OK);
+    }
 }

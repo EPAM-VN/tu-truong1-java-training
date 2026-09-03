@@ -49,4 +49,14 @@ public interface CustomerRepository extends JpaRepository<Customer, UUID>, JpaSp
             nativeQuery = true
     )
     Page<Customer> search(@Param("membership") String pMembership, @Param("email") String pEmail, Pageable pPageable);
+
+    @Query(
+            value = """
+            SELECT DISTINCT c
+            FROM Customer AS c
+            LEFT JOIN FETCH c.addresses
+            WHERE c.id = :id
+            """
+    )
+    Optional<Customer> getIncludeAdresses(@Param("id") UUID id);
 }

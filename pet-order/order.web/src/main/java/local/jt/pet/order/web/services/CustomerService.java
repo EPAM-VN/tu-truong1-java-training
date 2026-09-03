@@ -8,6 +8,7 @@ import local.jt.pet.order.web.models.Customer;
 import local.jt.pet.order.web.repositories.CustomerRepository;
 import local.jt.pet.order.web.repositories.CustomerSpecs;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.PredicateSpecification;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CustomerService {
@@ -42,6 +44,7 @@ public class CustomerService {
     }
 
     public Customer create(CreateCustomerCommand cmd) {
+        log.info("Logging from {} - action {} - cmd = {}", CustomerService.class.getName(), "create()", cmd);
         Customer customer = customerMapper.toEntity(cmd);
         return customerRepository.save(customer);
     }
@@ -67,5 +70,9 @@ public class CustomerService {
         );
 
         return customerRepository.findAll(specs, pageable);
+    }
+
+    public Optional<Customer> getIncludeAddresses(UUID id) {
+        return customerRepository.getIncludeAdresses(id);
     }
 }
