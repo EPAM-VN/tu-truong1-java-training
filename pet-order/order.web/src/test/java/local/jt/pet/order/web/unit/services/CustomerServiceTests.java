@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.integration.redis.util.RedisLockRegistry;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -39,8 +40,8 @@ public class CustomerServiceTests {
     @TestConfiguration
     static class CustomerServiceTestContextConfiguration {
         @Bean
-        public CustomerService customerService(CustomerRepository repo, CustomerMapper mapper) {
-            return new CustomerService(repo, mapper);
+        public CustomerService customerService(CustomerRepository repo, CustomerMapper mapper, RedisLockRegistry redisLockRegistry) {
+            return new CustomerService(repo, mapper, redisLockRegistry);
         }
     }
 

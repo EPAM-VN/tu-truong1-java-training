@@ -3,6 +3,7 @@ package local.jt.pet.order.web.models;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -12,6 +13,7 @@ import java.time.OffsetDateTime;
 @MappedSuperclass
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public abstract class Person extends BaseEntity {
     @Column(name = "first_name")
     private String firstName;

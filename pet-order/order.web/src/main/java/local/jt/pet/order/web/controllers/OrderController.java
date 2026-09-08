@@ -16,7 +16,7 @@ import java.util.UUID;
 public class OrderController {
     @GetMapping(version = "1.0")
     public ResponseEntity<List<String>> getOrders() {
-        return new ResponseEntity(Arrays.asList(new String[]{"1", "2", "3"}), HttpStatus.OK);
+        return new ResponseEntity<>(Arrays.asList(new String[]{"1", "2", "3"}), HttpStatus.OK);
     }
 
     @PostMapping(version = "1.0")
@@ -24,6 +24,6 @@ public class OrderController {
         NewOrderDto resp = new NewOrderDto();
         resp.setOrderId(UUID.randomUUID().toString());
 
-        return new ResponseEntity(resp,  HttpStatus.CREATED);
+        return new ResponseEntity<>(resp,  HttpStatus.CREATED);
     }
 }

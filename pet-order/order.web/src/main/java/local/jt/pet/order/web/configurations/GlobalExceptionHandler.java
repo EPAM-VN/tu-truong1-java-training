@@ -5,6 +5,7 @@ import local.jt.pet.order.web.exceptions.ApiProblemDetail;
 import local.jt.pet.order.web.exceptions.ValidationError;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.springframework.core.task.TaskRejectedException;
 import org.springframework.http.*;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.ErrorResponseException;
@@ -48,6 +49,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                         ));
 
         return ResponseEntity.badRequest().body(apiProblem);
+    }
+
+    @ExceptionHandler(TaskRejectedException.class)
+    public ResponseEntity<String> handleTaskRejected(TaskRejectedException ex) {
+        // Log the failure to your monitoring tools here
+        System.err.println("System overloaded! Task rejected: " + ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.TOO_MANY_REQUESTS) // HTTP 429
+                .body("Our system is currently busy processing other requests. Please try again in a few moments.");
     }
 
     @ExceptionHandler(Exception.class)

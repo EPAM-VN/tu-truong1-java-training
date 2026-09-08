@@ -13,12 +13,18 @@ import org.mapstruct.MappingTarget;
         uses = AddressMapper.class
 )
 public interface CustomerMapper {
+    @Mapping(source = "active", target = "isActive")
     CustomerDto toDto(Customer entity);
+
+    @Mapping(source = "active", target = "isActive")
     Customer toEntity(Customer entity);
+
+    @Mapping(source = "isActive", target = "isActive")
     Customer toEntity(CustomerDto dto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "orders", ignore = true)
+    @Mapping(source = "active", target = "isActive")
     Customer toEntity(CreateCustomerCommand command);
 
     @AfterMapping

@@ -21,6 +21,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
 @RestController
@@ -42,7 +43,7 @@ public class CustomerController {
 
     @GetMapping(path = "{customerId}", version = "1.0")
     public ResponseEntity<Optional<CustomerDto>> getById(@PathVariable UUID customerId, @RequestParam(name = "includeAddresses") Boolean includeAddresses) {
-        Optional<Customer> customer = Optional.empty();
+        Optional<CustomerDto> customer;
 
         if (includeAddresses) {
             customer = customerService.getIncludeAddresses(customerId);
@@ -52,19 +53,17 @@ public class CustomerController {
         }
 
         if  (customer.isPresent()) {
-            Optional<CustomerDto> viewModel = customer.map(customerMapper::toDto);
-            return new ResponseEntity<>(viewModel, HttpStatus.OK);
+            return new ResponseEntity<>(customer, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping(path = "filter", version = "1.0")
     public ResponseEntity<Optional<CustomerDto>> getByEmail(@RequestParam String email) {
-        Optional<Customer> customer = customerService.findByEmail(email);
+        Optional<CustomerDto> customer = customerService.findByEmail(email);
 
         if  (customer.isPresent()) {
-            Optional<CustomerDto> viewModel = customer.map(customerMapper::toDto);
-            new ResponseEntity<>(viewModel, HttpStatus.OK);
+            new ResponseEntity<>(customer, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -90,8 +89,8 @@ public class CustomerController {
     @PreAuthorize("hasAuthority('SCOPE_customers.write')")
     @PostMapping(version = "1.0")
     public ResponseEntity<CustomerDto> create(@RequestBody CreateCustomerCommand cmd) {
-        Customer result = customerService.create(cmd);
-        CustomerDto viewModel = customerMapper.toDto(result);
+        CustomerDto viewModel = customerService.create(cmd);
+
         return new ResponseEntity<>(viewModel, HttpStatus.CREATED);
     }
 
@@ -122,5 +121,19 @@ public class CustomerController {
         PaymentDto rs = paymentService.getPayment(UUID.randomUUID());
 
         return new ResponseEntity<>(rs, HttpStatus.OK);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        customerService.delete(id);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("lock")
+    public ResponseEntity<String> lock() throws Throwable {
+        CompletableFuture<String> rs = customerService.syncCustomers();
+
+        return new ResponseEntity<>(rs.get(), HttpStatus.OK);
     }
 }

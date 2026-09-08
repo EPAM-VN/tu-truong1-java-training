@@ -18,7 +18,7 @@ public class MvcConfiguration implements WebMvcConfigurer {
         configurer
                 // 0-based index of the URL path segment containing the version
                 .usePathSegment(1)
-                .addSupportedVersions("1.0", "2.0")
+                .addSupportedVersions("1.0", "2.0", "3.0")
                 .setDefaultVersion("1.0");
     }
 }

@@ -1,12 +1,10 @@
 package local.jt.pet.order.web.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 import local.jt.pet.order.web.enums.Membership;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.BatchSize;
 
@@ -34,10 +32,14 @@ public class Customer extends Person {
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @BatchSize(size = 100)
+    @JsonManagedReference
+    @Builder.Default
     private List<Address> addresses = new ArrayList<>();
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @BatchSize(size = 100)
+    @JsonManagedReference
+    @Builder.Default
     private List<Order> orders = new ArrayList<>();
 
     public boolean isMember() {
