@@ -1,3 +1,4 @@
 application.yaml filter=git-crypt diff=git-crypt
 application-*.yaml filter=git-crypt diff=git-crypt
 application.properties filter=git-crypt diff=git-crypt
+compose.yaml filter=git-crypt diff=git-crypt

@@ -17,7 +17,6 @@ public record CustomerDto(
     String email,
     boolean isActive,
     Membership membership,
-    List<AddressDto> addresses,
-    List<Order> orders
+    List<AddressDto> addresses
 ) {
 }
