@@ -15,7 +15,9 @@ public class KafkaProducerConfiguration {
 
     @Bean
     public ProducerFactory<String, CustomerCreatedEvent> producerFactory(KafkaProperties properties) {
-        return new DefaultKafkaProducerFactory<>(properties.buildProducerProperties());
+        var factory = new DefaultKafkaProducerFactory<String, CustomerCreatedEvent>(properties.buildProducerProperties());
+        factory.setTransactionIdPrefix("customer-tx-");
+        return factory;
     }
 
     @Bean
