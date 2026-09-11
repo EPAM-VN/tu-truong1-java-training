@@ -59,6 +59,7 @@ public class CustomerService {
         return customerRepository.findAll(pageable);
     }
 
+    @Transactional
     @CachePut(value = "customer", key = "#result.id")
     public CustomerDto create(CreateCustomerCommand cmd) {
         log.info("Logging from {} - action {} - cmd = {}", CustomerService.class.getName(), "create()", cmd);
