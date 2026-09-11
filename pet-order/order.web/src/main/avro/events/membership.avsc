@@ -1,0 +1,11 @@
+{
+  "type": "enum",
+  "namespace": "local.jt.pet.order.web.messaging.customers.events",
+  "name": "Membership",
+  "symbols": [
+    "GUEST",
+    "SILVER",
+    "GOLD",
+    "PLATINUM"
+  ]
+}

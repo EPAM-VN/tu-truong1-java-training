@@ -4,7 +4,9 @@ import local.jt.pet.order.web.dto.CreateCustomerCommand;
 import local.jt.pet.order.web.dto.CustomerDto;
 import local.jt.pet.order.web.dto.UpdateCustomerCommand;
 import local.jt.pet.order.web.enums.Membership;
+import local.jt.pet.order.web.mappers.CustomerCreatedEventMapper;
 import local.jt.pet.order.web.mappers.CustomerMapper;
+import local.jt.pet.order.web.messaging.customers.events.CustomerCreatedEvent;
 import local.jt.pet.order.web.models.Customer;
 import local.jt.pet.order.web.repositories.CustomerRepository;
 import local.jt.pet.order.web.repositories.CustomerSpecs;
@@ -34,6 +36,7 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
     private final RedisLockRegistry lockRegistry;
+    private final CustomerEventPublisher eventPublisher;
     private final String SYNC_LOCK_KEY = "customer-sync";
 
     @Cacheable(value = "customer", key = "#customerId")
@@ -61,7 +64,7 @@ public class CustomerService {
         log.info("Logging from {} - action {} - cmd = {}", CustomerService.class.getName(), "create()", cmd);
         Customer customer = customerMapper.toEntity(cmd);
         customer = customerRepository.save(customer);
-
+        eventPublisher.publishIntransaction(customer);
         return customerMapper.toDto(customer);
     }
 

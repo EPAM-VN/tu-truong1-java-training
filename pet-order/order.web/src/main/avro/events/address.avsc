@@ -1,0 +1,43 @@
+{
+  "type": "record",
+  "namespace": "local.jt.pet.order.web.messaging.customers.events",
+  "name": "Address",
+  "fields": [
+    {
+      "name": "id",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "logicalType": "uuid"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "street",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "city",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "state",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "postalCode",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "country",
+      "type": ["null", "string"],
+      "default": null
+    }
+  ]
+}

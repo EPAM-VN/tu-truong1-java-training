@@ -1,0 +1,15 @@
+{
+    "type": "record",
+    "namespace": "local.jt.pet.order.web.messaging.customers.events",
+    "name": "CustomerCreatedEvent",
+    "fields": [
+        {
+            "name": "metadata",
+            "type": "local.jt.pet.order.web.messaging.events.common.EventMetadata"
+        },
+        {
+            "name": "payload",
+            "type": "local.jt.pet.order.web.messaging.customers.events.CustomerPayload"
+        }
+    ]
+}

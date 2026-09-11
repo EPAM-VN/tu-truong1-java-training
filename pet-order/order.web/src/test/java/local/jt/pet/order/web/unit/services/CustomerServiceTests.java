@@ -6,6 +6,7 @@ import local.jt.pet.order.web.mappers.CustomerMapper;
 import local.jt.pet.order.web.mappers.CustomerMapperImpl;
 import local.jt.pet.order.web.models.Customer;
 import local.jt.pet.order.web.repositories.CustomerRepository;
+import local.jt.pet.order.web.services.CustomerEventPublisher;
 import local.jt.pet.order.web.services.CustomerService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,8 +41,12 @@ public class CustomerServiceTests {
     @TestConfiguration
     static class CustomerServiceTestContextConfiguration {
         @Bean
-        public CustomerService customerService(CustomerRepository repo, CustomerMapper mapper, RedisLockRegistry redisLockRegistry) {
-            return new CustomerService(repo, mapper, redisLockRegistry);
+        public CustomerService customerService(CustomerRepository repo,
+                                               CustomerMapper mapper,
+                                               RedisLockRegistry redisLockRegistry,
+                                               CustomerEventPublisher eventPublisher
+        ) {
+            return new CustomerService(repo, mapper, redisLockRegistry, eventPublisher);
         }
     }
 

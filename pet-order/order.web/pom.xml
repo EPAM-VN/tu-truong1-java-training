@@ -37,6 +37,17 @@
             <url>https://packages.confluent.io/maven/</url>
         </repository>
     </repositories>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-bom</artifactId>
+                <version>1.17.1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -126,13 +137,6 @@
             <artifactId>spring-boot-docker-compose</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-bom</artifactId>
-            <version>1.17.1</version>
-            <type>pom</type>
-            <scope>import</scope>
         </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
@@ -377,8 +381,16 @@
                 <artifactId>avro-maven-plugin</artifactId>
                 <version>1.12.2</version>
                 <configuration>
-                    <sourceDirectory>${project.basedir}/src/main/avro/</sourceDirectory>
-                    <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
+                    <sourceDirectory>${project.basedir}/src/main/avro</sourceDirectory>
+                    <outputDirectory>${project.build.directory}/generated-sources/avro</outputDirectory>
+                    <stringType>String</stringType>
+                    <enableDecimalLogicalType>true</enableDecimalLogicalType>
+                    <imports>
+                        <import>${project.basedir}/src/main/avro/common/event-metadata.avsc</import>
+                        <import>${project.basedir}/src/main/avro/events/address.avsc</import>
+                        <import>${project.basedir}/src/main/avro/events/membership.avsc</import>
+                        <import>${project.basedir}/src/main/avro/events/customer-payload.avsc</import>
+                    </imports>
                 </configuration>
                 <executions>
                     <execution>

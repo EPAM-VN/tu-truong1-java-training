@@ -80,20 +80,20 @@ public class CachingConfiguration {
         );
     }
 
-    @Bean
-    RedisConnectionFactory redisConnectionFactory() {
-
-        RedisStandaloneConfiguration redisConfig =
-                new RedisStandaloneConfiguration("localhost", 6379);
-
-        redisConfig.setPassword(RedisPassword.of("1qaZ2wsX@1234"));
-
-        LettuceClientConfiguration clientConfig =
-                LettuceClientConfiguration.builder()
-                        .useSsl()
-                        .disablePeerVerification()
-                        .build();
-
-        return new LettuceConnectionFactory(redisConfig, clientConfig);
-    }
+//    @Bean
+//    RedisConnectionFactory redisConnectionFactory() {
+//
+//        RedisStandaloneConfiguration redisConfig =
+//                new RedisStandaloneConfiguration("localhost", 6379);
+//
+//        redisConfig.setPassword(RedisPassword.of("1qaZ2wsX@1234"));
+//
+//        LettuceClientConfiguration clientConfig =
+//                LettuceClientConfiguration.builder()
+//                        .useSsl()
+//                        .disablePeerVerification()
+//                        .build();
+//
+//        return new LettuceConnectionFactory(redisConfig, clientConfig);
+//    }
 }

@@ -2,6 +2,7 @@ package local.jt.pet.order.web.mappers;
 
 import local.jt.pet.order.web.dto.CreateCustomerCommand;
 import local.jt.pet.order.web.dto.CustomerDto;
+import local.jt.pet.order.web.messaging.customers.events.CustomerCreatedEvent;
 import local.jt.pet.order.web.models.Customer;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -19,6 +20,7 @@ public interface CustomerMapper {
     @Mapping(source = "active", target = "isActive")
     Customer toEntity(Customer entity);
 
+    @Mapping(target = "orders", ignore = true)
     @Mapping(source = "isActive", target = "isActive")
     Customer toEntity(CustomerDto dto);
 
