@@ -14,7 +14,7 @@ public class CustomerCreatedConsumer {
             groupId = "customer-service"
     )
     public void consume(
-            CustomerCreatedEvent event,
+            CustomerCreatedEvent event, // move .avro contacts to another module
             Acknowledgment ack) {
 
         try {
