@@ -373,7 +373,10 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.6</version>
                 <configuration>
-                    <argLine>-Duser.timezone=UTC</argLine>
+                    <argLine>
+                        -Duser.timezone=UTC
+                        -Dorg.apache.avro.SERIALIZABLE_PACKAGES=local.jt.pet.order.web.messaging
+                    </argLine>
                 </configuration>
             </plugin>
             <plugin>

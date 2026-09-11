@@ -65,7 +65,7 @@ public class CustomerService {
         log.info("Logging from {} - action {} - cmd = {}", CustomerService.class.getName(), "create()", cmd);
         Customer customer = customerMapper.toEntity(cmd);
         customer = customerRepository.save(customer);
-        eventPublisher.publishIntransaction(customer);
+        eventPublisher.publish(customer);
         return customerMapper.toDto(customer);
     }
 

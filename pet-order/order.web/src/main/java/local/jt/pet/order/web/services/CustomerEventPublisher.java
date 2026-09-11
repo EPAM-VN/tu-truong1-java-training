@@ -5,6 +5,7 @@ import local.jt.pet.order.web.messaging.customers.events.CustomerCreatedEvent;
 import local.jt.pet.order.web.models.Customer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.avro.specific.SpecificRecord;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,22 @@ public class CustomerEventPublisher {
                     CustomerCreatedEvent.class.getName(),
                     1
                 ));
+
+        log.info("payload type={}, event={}", event.getClass(), event);
+
+        log.info("event specific={}", event instanceof SpecificRecord);
+
+        log.info("metadata type={}",
+                event.getMetadata().getClass().getName());
+
+        log.info("metadata specific={}",
+                event.getMetadata() instanceof SpecificRecord);
+
+        log.info("payload type={}",
+                event.getPayload().getClass().getName());
+
+        log.info("payload specific={}",
+                event.getPayload() instanceof SpecificRecord);
 
         return kafkaTemplate.send(
                     TOPIC_NAME,
@@ -52,21 +69,21 @@ public class CustomerEventPublisher {
                 1
         ));
 
-        return kafkaTemplate.executeInTransaction(operations -> {
-            return operations.send(
-                            TOPIC_NAME,
-                            event.getPayload().getCustomerId().toString(),
-                            event
-                    )
-                    .whenComplete((result, ex) -> {
-                        if (ex != null) {
-                            log.error("Failed to publish event topic={} key={}", TOPIC_NAME, event.getPayload().getCustomerId().toString(), ex);
-                            return;
-                        }
+        log.info("payload type={}, event={}", event.getClass(), event);
 
-                        var metadata = result.getRecordMetadata();
-                        log.info("Published topic={} partition={} offset={}", metadata.topic(), metadata.partition(), metadata.offset());
-                    });
-        });
+        return kafkaTemplate.executeInTransaction(operations -> operations.send(
+                        TOPIC_NAME,
+                        event.getPayload().getCustomerId().toString(),
+                        event
+                )
+                .whenComplete((result, ex) -> {
+                    if (ex != null) {
+                        log.error("Failed to publish event topic={} key={}", TOPIC_NAME, event.getPayload().getCustomerId().toString(), ex);
+                        return;
+                    }
+
+                    var metadata = result.getRecordMetadata();
+                    log.info("Published topic={} partition={} offset={}", metadata.topic(), metadata.partition(), metadata.offset());
+                }));
     }
 }
