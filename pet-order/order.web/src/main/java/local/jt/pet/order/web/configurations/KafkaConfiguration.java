@@ -1,5 +1,6 @@
 package local.jt.pet.order.web.configurations;
 
+import org.apache.kafka.common.TopicPartition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -16,7 +17,11 @@ import java.util.Random;
 public class KafkaConfiguration {
     @Bean
     DefaultErrorHandler errorHandler(KafkaTemplate<?, ?> template) {
-        var recoverer = new DeadLetterPublishingRecoverer(template);
+        var recoverer = new DeadLetterPublishingRecoverer(template, (record, ex) ->
+                new TopicPartition(
+                        record.topic() + ".dlt",
+                        record.partition()
+                ));
         var retryPolicy = new ExponentialBackOffWithMaxRetries(3);
         retryPolicy.setInitialInterval(1000);
         retryPolicy.setMaxInterval(5000);
