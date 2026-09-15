@@ -1,5 +1,8 @@
 package local.jt.pet.order.web.unit.services;
 
+import io.github.resilience4j.bulkhead.Bulkhead;
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.RateLimiter;
 import local.jt.pet.order.web.helpers.DataHelper;
 import local.jt.pet.order.web.mappers.AddressMapperImpl;
 import local.jt.pet.order.web.mappers.CustomerMapper;
@@ -21,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.integration.redis.util.RedisLockRegistry;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 import java.util.UUID;
@@ -44,9 +48,14 @@ public class CustomerServiceTests {
         public CustomerService customerService(CustomerRepository repo,
                                                CustomerMapper mapper,
                                                RedisLockRegistry redisLockRegistry,
-                                               CustomerEventPublisher eventPublisher
+                                               CustomerEventPublisher eventPublisher,
+                                               WebClient customerWebClient,
+                                               CircuitBreaker circuitBreaker,
+                                               RateLimiter rateLimiter,
+                                               Bulkhead bulkhead
+
         ) {
-            return new CustomerService(repo, mapper, redisLockRegistry, eventPublisher);
+            return new CustomerService(repo, mapper, redisLockRegistry, eventPublisher, customerWebClient, circuitBreaker, rateLimiter, bulkhead);
         }
     }
 

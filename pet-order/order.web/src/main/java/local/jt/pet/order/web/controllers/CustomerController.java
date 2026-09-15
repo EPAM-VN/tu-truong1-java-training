@@ -19,6 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -135,5 +136,12 @@ public class CustomerController {
         CompletableFuture<String> rs = customerService.syncCustomers();
 
         return new ResponseEntity<>(rs.get(), HttpStatus.OK);
+    }
+
+    @GetMapping("external/{id}")
+    public ResponseEntity<Mono<CustomerDto>> external(@PathVariable UUID id) throws Throwable {
+        var rs = customerService.getExternalCustomer(id);
+
+        return new ResponseEntity<>(rs, HttpStatus.OK);
     }
 }

@@ -4,6 +4,7 @@ import org.springframework.cache.Cache;
 
 import java.util.concurrent.Callable;
 
+@SuppressWarnings("NullableProblems")
 public class MultiLevelCache implements Cache {
 
     private final String name;

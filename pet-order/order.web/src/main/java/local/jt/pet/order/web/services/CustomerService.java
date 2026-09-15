@@ -1,9 +1,17 @@
 package local.jt.pet.order.web.services;
 
+import io.github.resilience4j.bulkhead.Bulkhead;
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.RateLimiter;
+import io.github.resilience4j.reactor.bulkhead.operator.BulkheadOperator;
+import io.github.resilience4j.reactor.circuitbreaker.operator.CircuitBreakerOperator;
+import io.github.resilience4j.reactor.ratelimiter.operator.RateLimiterOperator;
 import local.jt.pet.order.web.dto.CreateCustomerCommand;
 import local.jt.pet.order.web.dto.CustomerDto;
 import local.jt.pet.order.web.dto.UpdateCustomerCommand;
 import local.jt.pet.order.web.enums.Membership;
+import local.jt.pet.order.web.exceptions.DownstreamUnavailableException;
 import local.jt.pet.order.web.mappers.CustomerCreatedEventMapper;
 import local.jt.pet.order.web.mappers.CustomerMapper;
 import local.jt.pet.order.web.messaging.customers.events.CustomerCreatedEvent;
@@ -18,11 +26,16 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.integration.redis.util.RedisLockRegistry;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -38,6 +51,11 @@ public class CustomerService {
     private final RedisLockRegistry lockRegistry;
     private final CustomerEventPublisher eventPublisher;
     private final String SYNC_LOCK_KEY = "customer-sync";
+
+    private final WebClient customerWebClient;
+    private final CircuitBreaker circuitBreaker;
+    private final RateLimiter rateLimiter;
+    private final Bulkhead bulkhead;
 
     @Cacheable(value = "customer", key = "#customerId")
     public Optional<CustomerDto> findById(UUID customerId) {
@@ -104,6 +122,33 @@ public class CustomerService {
         Optional<CustomerDto> rs = customerRepository.getIncludeAdresses(id).map(customerMapper::toDto);
 
         return rs;
+    }
+
+    public Mono<CustomerDto> getExternalCustomer(UUID id) {
+        return customerWebClient.get()
+                .uri("/api/customers/{id}", id)
+                .retrieve()
+                .onStatus(
+                        HttpStatusCode::isError,
+                        ClientResponse::createException
+                )
+                .bodyToMono(CustomerDto.class)
+                .transformDeferred(
+                        RateLimiterOperator.of(rateLimiter)
+                )
+                .transformDeferred(
+                        BulkheadOperator.of(bulkhead)
+                )
+                .transformDeferred(
+                        CircuitBreakerOperator.of(circuitBreaker)
+                )
+                .timeout(Duration.ofSeconds(3))
+                .onErrorResume(
+                        CallNotPermittedException.class,
+                        e -> Mono.error(
+                                new DownstreamUnavailableException("502 Service Unavailable")
+                        )
+                );
     }
 
     @Async("asyncSimulatorExecutor")

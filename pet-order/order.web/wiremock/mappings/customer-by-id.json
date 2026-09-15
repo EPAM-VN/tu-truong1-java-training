@@ -1,0 +1,39 @@
+{
+    "request": {
+        "method": "GET", 
+        "urlPathPattern": "/api/customers/([0-9a-fA-F\\-]+)"
+    },
+    "response": {
+        "status": 200,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "jsonBody": {
+            "id": "{{request.pathSegments.[2]}}",
+            "firstName": "John",
+            "lastName": "Doe",
+            "dateOfBirth": "1990-01-15T00:00:00Z",
+            "identifier": "CUST-123456",
+            "email": "john.doe@example.com",
+            "active": true,
+            "membership": {
+                "id": "550e8400-e29b-41d4-a716-446655440000",
+                "type": "GOLD",
+                "validUntil": "2030-12-31T00:00:00Z"
+            },
+            "addresses": [
+                {
+                    "id": "660e8400-e29b-41d4-a716-446655440000",
+                    "street": "123 Nguyen Hue",
+                    "city": "Ho Chi Minh City",
+                    "country": "Vietnam",
+                    "postalCode": "700000",
+                    "primary": true
+                }
+            ]
+        },
+        "transformers": [
+            "response-template"
+        ]
+    }
+}
